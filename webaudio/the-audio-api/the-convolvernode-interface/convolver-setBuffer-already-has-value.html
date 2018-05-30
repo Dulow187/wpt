@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>
+      convolver-setBuffer-already-has-value.html
+    </title>
+    <script src="/resources/testharness.js"></script>
+    <script src="/resources/testharnessreport.js"></script>
+    <script src="/webaudio/resources/audit-util.js"></script>
+    <script src="/webaudio/resources/audit.js"></script>
+    <script src="/webaudio/resources/convolution-testing.js"></script>
+  </head>
+  <body>
+    <script id="layout-test-code">
+      let audit = Audit.createTaskRunner();
+
+      audit.define('test', function(task, should) {
+        let context = new AudioContext();
+        let squarePulse = createSquarePulseBuffer(context, pulseLengthFrames);
+        let convolver = context.createConvolver();
+
+        should(() => {
+          convolver.buffer = squarePulse;
+        }, 'set buffer first normally').notThrow();
+
+	should(() => {
+          convolver.buffer = squarePulse;
+        }, 'set buffer second should throw error').throw('InvalidStateError');
+
+        task.done();
+      });
+
+      audit.run();
+    </script>
+  </body>
+</html>
